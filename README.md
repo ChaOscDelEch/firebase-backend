@@ -113,29 +113,48 @@ Currently running in **development mode** with simplified security:
 - **Region**: europe-west1
 - **Runtime**: Cloud Functions v2
 
-## 🔗 Related
+## Related
 
-- Frontend: [firebase-frontend repository]
-- Firestore UI: http://127.0.0.1:4000/firestore (when emulator running)
+**Frontend Repository:** [https://github.com/ChaOscDelEch/firebase-frontend](https://github.com/ChaOscDelEch/firebase-frontend)
+
+### Why Separate Repositories?
+
+This project was intentionally split from a monorepo structure into independent repositories to demonstrate production-ready architectural practices:
+
+**Independent Deployment Cycles:**
+- Backend (Firebase Cloud Functions) can be deployed without touching frontend code
+- Frontend (React SPA) can be updated and deployed to static hosting independently
+- Each repository has its own CI/CD pipeline potential
+
+**Team Collaboration Model:**
+- Backend team can work with firebase-admin, Cloud Functions, and Firestore security rules
+- Frontend team focuses on React, TanStack Query, and user experience
+- No conflicts in package.json dependencies or build processes
+
+**Technology Stack Separation:**
+- Backend: Node.js ESM, firebase-functions, firebase-admin (server-side only)
+- Frontend: React 19, Vite, Firebase client SDK, TanStack Query
+- Each repo optimized for its specific runtime environment
+
+**Professional Review & Code Quality:**
+- Easier to review backend security, validation, and serverless architecture
+- Frontend performance and UX can be evaluated independently
+- Clear separation of concerns for certification assessment
+
+This architecture mirrors real-world microservices patterns where backend APIs and frontend applications are maintained as separate deployable units.
+
+**Firestore UI:** http://127.0.0.1:4000/firestore (when emulator running)
+
+
 
 ## 👨‍💻 Development Notes
 
 This backend uses **package.json imports** for clean module resolution:
-- `#notes` → `./notes/index.js`
-- `#validators` → `./validators.js`
-- `#authMiddleware` → `./authMiddleware.js`
 
 ## 📚 Documentation
 
 For detailed Firebase Functions documentation:
-- [Firebase Functions v2 Docs](https://firebase.google.com/docs/functions)
-- [Callable Functions](https://firebase.google.com/docs/functions/callable)
 
----
 
 **Built for WBS Coding School Certification Module**
 
-## Related Repositories
-
-- **Backend Repository:** [https://github.com/ChaOscDelEch/firebase-backend](https://github.com/ChaOscDelEch/firebase-backend)
-- **Frontend Repository:** [https://github.com/ChaOscDelEch/firebase-frontend](https://github.com/ChaOscDelEch/firebase-frontend)
