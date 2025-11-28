@@ -134,3 +134,8 @@ For detailed Firebase Functions documentation:
 ---
 
 **Built for WBS Coding School Certification Module**
+
+## Related Repositories
+
+- **Backend Repository:** [https://github.com/ChaOscDelEch/firebase-backend](https://github.com/ChaOscDelEch/firebase-backend)
+- **Frontend Repository:** [https://github.com/ChaOscDelEch/firebase-frontend](https://github.com/ChaOscDelEch/firebase-frontend)
