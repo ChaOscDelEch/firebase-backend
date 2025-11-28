@@ -1,0 +1,12 @@
+# Firebase Backend
+
+node_modules/
+functions/node_modules/
+*.log
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+*.local
+.env
+.env.local

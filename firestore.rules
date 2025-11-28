@@ -1,0 +1,92 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserRole() {
+      return request.auth.token.role;
+    }
+    
+    function isSysadmin() {
+      return isAuthenticated() && getUserRole() == 'sysadmin';
+    }
+    
+    function isProgramOwner() {
+      return isAuthenticated() && getUserRole() == 'programOwner';
+    }
+    
+    function isOperations() {
+      return isAuthenticated() && getUserRole() == 'operations';
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isActiveUser() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.active == true;
+    }
+    
+    // Users collection - only sysadmin can write
+    match /users/{userId} {
+      allow read: if isActiveUser();
+      allow create, update, delete: if isSysadmin();
+    }
+    
+    // Notes collection (test/demo data)
+    match /notes/{noteId} {
+      allow read: if isActiveUser();
+      allow create: if isActiveUser() && (isSysadmin() || isProgramOwner());
+      allow update: if isActiveUser() && (isSysadmin() || isOwner(resource.data.createdBy));
+      allow delete: if isSysadmin();
+    }
+    
+    // Modules collection - core business logic
+    match /modules/{moduleId} {
+      allow read: if isActiveUser();
+      allow create: if isActiveUser() && (isSysadmin() || isProgramOwner());
+      allow update: if isActiveUser() && (isSysadmin() || isProgramOwner());
+      allow delete: if isSysadmin();
+    }
+    
+    // Courses collection
+    match /courses/{courseId} {
+      allow read: if isActiveUser();
+      allow create: if isActiveUser() && (isSysadmin() || isProgramOwner());
+      allow update: if isActiveUser() && (isSysadmin() || isProgramOwner());
+      allow delete: if isSysadmin();
+    }
+    
+    // Certification rounds - only sysadmin can write
+    match /certificationRounds/{roundId} {
+      allow read: if isActiveUser();
+      allow create, update, delete: if isSysadmin();
+    }
+    
+    // Comments - operations can create, owners can reply
+    match /comments/{commentId} {
+      allow read: if isActiveUser();
+      allow create: if isActiveUser() && (isOperations() || isSysadmin());
+      allow update: if isActiveUser() && (isSysadmin() || isOwner(resource.data.createdBy));
+      allow delete: if isSysadmin();
+    }
+    
+    // Audit logs - read-only for sysadmin
+    match /auditLogs/{logId} {
+      allow read: if isSysadmin();
+      allow write: if false; // Only backend can write
+    }
+    
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
